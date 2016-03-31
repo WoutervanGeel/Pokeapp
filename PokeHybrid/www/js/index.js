@@ -5,7 +5,135 @@ function Application(){
 	var self = this;
 	var api = new APIhandler();
     var selectedPokemon;
-	
+    var triggerCell;
+    var number = 1;
+    	
+    // START OVER ---------------------------------------------------------------------------------------------------------------
+    
+    
+    // $(document).on('pagecreate', '#index-page', function(){
+    //     api.getAllPokemon(function(data){
+    //         for(xPokemon in data){
+    //             var pokemon = data[xPokemon];
+    //             $('#pokemon-list').append("<li id='"+pokemon['name']+"'><a href='#detail-page'>"+pokemon['name']+"</a></li>");
+    //             //$('#pokemon-list').append("<li id='pId"+pokemon['name']+"'><a href='#detail-page'>"+pokemon['name']+"</a></li>");
+                
+                
+    //             $('#'+pokemon['name']).on('click', function(e){
+    //                e.preventDefault();
+    //                self.selectedPokemon = this.id;
+    //                $.mobile.changePage('#detail-page');
+    //             });
+    //         }
+    //         $('#pokemon-list').listview('refresh');
+    //     });
+    // });
+    
+    $(document).on('pagecreate', '#index-page', function(){
+       $(document).on("scrollstop", function(){
+            //Check if TriggerCell is on screen
+            var element = $('#'+self.triggerCell);
+            if(self.isOnScreen(element)){
+                self.addPokemonToList();
+            }
+        });
+        
+        self.addPokemonToList();
+    });
+    
+    self.addPokemonToList = function(){
+        api.getMorePokemon(function(data){
+            var half = data.length - 10;
+            var i = 0;
+            for(xPokemon in data){
+                var pokemon = data[xPokemon];
+                $('#pokemon-list').append("<li id='"+pokemon['name']+"'><a href='#detail-page'>"+number+" - "+pokemon['name']+"</a></li>");
+                number++;
+                //$('#pokemon-list').append("<li id='pId"+pokemon['name']+"'><a href='#detail-page'>"+pokemon['name']+"</a></li>");
+                
+                
+                $('#'+pokemon['name']).on('click', function(e){
+                   e.preventDefault();
+                   self.selectedPokemon = this.id;
+                   $.mobile.changePage('#detail-page');
+                });
+                
+                if(i == half){
+                    //apply to the cell in the middle
+                    self.triggerCell = pokemon['name'];
+                }
+                
+                i++;
+            }
+            $('#pokemon-list').listview('refresh');
+        });
+    }
+    
+    $(document).on('pagebeforeshow', '#detail-page', function(){
+        $('#pokemon-name').html(self.selectedPokemon);
+        $('#types').empty();
+        $('#moves').empty();
+        
+        api.getPokemonByName(self.selectedPokemon, function(data){
+            
+            //add types
+            $('#types').append("<li data-role='list-divider' data-theme='b'>Types</li>");
+            for(xType in data['types']){
+                $('#types').append("<li>"+ data['types'][xType] +"</li>")
+            }
+            $('#types').listview('refresh');
+            
+            //add moves
+            $('#moves').append("<li data-role='list-divider' data-theme='b'>Moves</li>");
+            for(xMove in data['moves']){
+                $('#moves').append("<li>"+ data['moves'][xMove] +"</li>")
+            }
+            $('#moves').listview('refresh');
+        });
+    });
+    
+    // function elementInViewport(el) {
+    //     var top = el.offsetTop;
+    //     var left = el.offsetLeft;
+    //     var width = el.offsetWidth;
+    //     var height = el.offsetHeight;
+        
+    //     var bottom = top + height;
+    //     var bottomScreen = window.pageYOffset;
+    //     console.log(el);
+    //     alert("element: "+el+"\n\nheight element: "+height+"\ntop element: "+top+"\nbottom element: "+bottom+"\nbottomScreen: "+bottomScreen);
+
+    //     // while(el.offsetParent) {
+    //     //     el = el.offsetParent;
+    //     //     top += el.offsetTop;
+    //     //     left += el.offsetLeft;
+    //     // }
+
+
+    //     var arg1 = (top >= window.pageYOffset);
+    //     alert(arg1);
+    //     return (
+    //         top >= window.pageYOffset /*&&
+    //         left >= window.pageXOffset &&
+    //         (top + height) <= (window.pageYOffset + window.innerHeight) &&
+    //         (left + width) <= (window.pageXOffset + window.innerWidth)*/
+    //     );
+    // }
+    
+    self.isOnScreen = function(element){
+        var viewport = {};
+        viewport.top = $(window).scrollTop();
+        viewport.bottom = viewport.top + $(window).height();
+        var bounds = {};
+        bounds.top = element.offset().top;
+        bounds.bottom = bounds.top + element.outerHeight();
+        return ((bounds.top <= viewport.bottom) && (bounds.bottom >= viewport.top));
+    };
+    
+}
+    
+    // START OVER ---------------------------------------------------------------------------------------------------------------
+    
     // self.bindEvents = function() {
     //     document.addEventListener('deviceready', this.onDeviceReady, false);
     // }
@@ -24,30 +152,44 @@ function Application(){
 
     //     console.log('Received Event: ' + id);
     // }
+    /*
+    $(document).on('pagecreate', '#detail-page', function(){
+        $('#pokemon-name').html(self.selectedPokemon.name);
+        $('#types').empty();
+        
+        for(xType in self.selectedPokemon.types){
+            $("<li><a href='#'>"+self.selectedPokemon.types[xType]+"</a></li>").appendTo("#types").listview();
+        }
+    });
     
     self.refreshDetailPage = function(){
         $('#pokemon-name').html(self.selectedPokemon.name);
         
         $('#types').empty();
         for(xType in self.selectedPokemon.types){
-            $('#types').append("<li><a href='#'>"+self.selectedPokemon.types[xType]+"</a></li>");
-            $("#types").append("<li><a href='#'>"+self.selectedPokemon.name+"</a></li>");
+            $("<li><a href='#'>"+self.selectedPokemon.types[xType]+"</a></li>").appendTo("#types").listview();
+            //$('#types').append("<li><a href='#'>"+self.selectedPokemon.types[xType]+"</a></li>");
+            //$("#types").append("<li><a href='#'>"+self.selectedPokemon.name+"</a></li>");
         }
+        var lv = $('#types');
+        console.log(lv);
+        //$('#types').listview('refresh');
     }
     
     self.addPokemonToList = function(pokemon){
         $("#pokemon-list").append("<li id='pId"+pokemon.name+"'><a href='#detail-page'>"+pokemon.name+"</a></li>");
-
+        
         $('#pId' + pokemon.name).on('click', function(e) {
             e.preventDefault();
             //alert('test -'+pokemon.name + "-");
             self.selectedPokemon = pokemon.name;
-            
+            self.refreshDetailPage();
             $.mobile.changePage('#detail-page');
+            //$("#pokemon-list").append("<li><a href='#'>test</a></li>");
             
             api.getPokemonByName(self.selectedPokemon, function(pokemon){
                 self.selectedPokemon = pokemon;
-                self.refreshDetailPage();
+                //self.refreshDetailPage();
             });
         });
 
@@ -181,6 +323,6 @@ function Application(){
 
 
 
-
+*/
 
 

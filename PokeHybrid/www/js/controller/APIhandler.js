@@ -2,9 +2,15 @@ function APIhandler(){
 	var self = this;
 	var url = "https://obscure-plains-37886.herokuapp.com/";
     
+    // ALWAYS EVEN NUMBER
+    var limit = 40;
+    
+    var offset = 0;
+    
     self.getAllPokemon = function(callback){
-		pokemon = [];
-		$.get( url + "pokemon", function(data) {
+		var pokemon = [];
+
+		$.get( url + "pokemon" + "?limit="+limit+"&offset="+offset, function(data) {
 			 for(i = 0; i < data.count; i++){
 			 	pokemon[i] = new Pokemon(data.results[i].name, null, null);
 			 }
@@ -32,6 +38,19 @@ function APIhandler(){
 		});
 	}
     
+    self.getMorePokemon = function(callback){
+        //https://obscure-plains-37886.herokuapp.com/pokemon?limit=40&offset=5
+        var pokemon = [];
+
+		$.get( url + "pokemon" + "?limit="+limit+"&offset="+offset, function(data) {
+			 for(i = 0; i < data.count; i++){
+			 	pokemon[i] = new Pokemon(data.results[i].name, null, null);
+			 }
+             
+             offset += limit;
+			 callback(pokemon);
+		});
+    }
     
     
     // // Example! ----------------------------------------------------------------------------------------------------------------------------------------------------

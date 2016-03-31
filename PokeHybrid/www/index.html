@@ -37,10 +37,10 @@
         <!-- Body -->
         
         <!-- Home page -->
-        <div data-role="page" id="index">
+        <div data-role="page" id="index-page">
             <div data-theme="a" data-role="header">
                 <h3>
-                    First Page
+                    Pokedex
                 </h3>
             </div>
 
@@ -61,16 +61,18 @@
                 <h3 id="pokemon-name">
                     Pokemon name
                 </h3>
-                <a href="#index" class="ui-btn-right">Back</a>
+                <a href="#index-page" class="ui-btn-right">Back</a>
             </div>
 
-            <div data-role="content">
-                <ul data-role="listview" data-theme="a" id="types">
+            <div data-role="detail-content">
+                <img src="./img/pokeball_loading.gif"></img>
                 
+                <ul data-role="listview" data-theme="a" id="types" data-inset="true">
+                <li data-role="list-divider" data-theme="b">Types</li>
                 </ul>
-                
+                </br>
                 <ul data-role="listview" data-theme="a" id="moves" data-inset="true">
-                
+                <li data-role="list-divider" data-theme="b">Moves</li>
                 </ul>
             </div>
 
