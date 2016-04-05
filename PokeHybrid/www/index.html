@@ -34,13 +34,17 @@
     </head>
     <body>
         
+        <div id="load-image"></div>
         <!-- Body -->
         
         <!-- Home page -->
         <div data-role="page" id="index-page">
-            <div data-theme="a" data-role="header">
-                <h3>
+            <div data-theme="a" data-role="header" data-position="fixed">
+                <h3 id="pokedex">
                     Pokedex
+                </h3>
+                <h3 id="battery-status">
+                    Battery status    
                 </h3>
             </div>
 
@@ -51,13 +55,13 @@
             </div>
 
             <div data-theme="a" data-role="footer" data-position="fixed">
-
+                <a id="settings-button" href="#" data-role="button" data-icon="gear">Settings</a>
             </div>
         </div>  
         
         <!-- Detail page -->
         <div data-role="page" id="detail-page">
-            <div data-theme="a" data-role="header">
+            <div data-theme="a" data-role="header" data-position="fixed">
                 <h3 id="pokemon-name">
                     Pokemon name
                 </h3>
@@ -65,7 +69,6 @@
             </div>
 
             <div data-role="detail-content">
-                <img src="./img/pokeball_loading.gif"></img>
                 
                 <ul data-role="listview" data-theme="a" id="types" data-inset="true">
                 <li data-role="list-divider" data-theme="b">Types</li>
@@ -81,6 +84,44 @@
             </div>
         </div> 
         
+        <!-- settings page -->
+        <div data-role="page" id="settings-page" data-theme="b">
+            <div data-theme="b" data-role="header" data-position="fixed">
+                <h3>
+                    Settings
+                </h3>
+                <a href="#index-page" class="ui-btn-right">Back</a>
+            </div>
+
+            <div data-role="detail-content">
+                <div data-role="fieldcontain">
+                    <label for="username">Your name:</label>
+                    <input type="text" name="username" id="username" data-theme="a" value=""  />
+                    </br>
+                    <a href="#" id="save-button" data-role="button" data-theme="a" data-icon="check">Save</a>
+                </div>
+            </div>
+        </div> 
+        
+        <!-- camera page -->
+        <div data-role="page" id="camera-page" data-position="fixed">
+            <div data-theme="a" data-role="header">
+                <h3>
+                    Camera
+                </h3>
+                <a href="#index-page" class="ui-btn-right">Back</a>
+            </div>
+
+            <div data-role="content">
+                <a data-role="button" id="camera-button">Take a picture</a>
+                <div id="image"></div>
+            </div>
+
+            <div data-theme="a" data-role="footer" data-position="fixed">
+
+            </div>
+        </div>
+        
         <!-- Don't edit -->
         <script type="text/javascript" src="cordova.js"></script>
         
@@ -92,10 +133,6 @@
         
         <!-- controller -->
         <script type="text/javascript" src="js/index.js"></script>
-        
-<!--        <script type="text/javascript">
-            app.initialize();
-        </script> 
--->
+
     </body>
 </html>
