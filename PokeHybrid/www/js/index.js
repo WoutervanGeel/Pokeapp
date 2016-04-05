@@ -15,6 +15,7 @@ function Application(){
         self.addClickEventsToList();
         self.addCameraButtonEvent();
         self.addPageEvents();
+        self.updateUsername();
         self.requestNewPokemon();
     }
     
@@ -188,7 +189,11 @@ function Application(){
     }
     
     self.updateUsername = function(){
-        $('#pokedex').html(localStorage.getItem("name") + "\'s pokedex");
+        if(localStorage.getItem("name") == undefined || localStorage.getItem("name") == null){
+            $('#pokedex').html("Someone's pokedex");
+        } else {
+            $('#pokedex').html(localStorage.getItem("name") + "\'s pokedex");
+        }
     }
     
     self.requestSinglePokemon = function(){
